@@ -1,0 +1,4 @@
+[IMAP]
+server = eden.dei.uc.pt
+username = afmart
+folder = Archives

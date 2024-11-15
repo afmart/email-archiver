@@ -1,0 +1,7 @@
+# External packages (if any) could be listed here
+imaplib2==2.101  # Used for IMAP email interaction
+email-validator==1.3.1  # Ensures correct email parsing and handling (optional if you need it)
+# Optional to specify the Python version if using a specific environment
+# python==3.8.*
+
+
