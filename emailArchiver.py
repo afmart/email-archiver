@@ -97,7 +97,7 @@ def archive_emails(mail, archive_folder):
             email_year = email_date.year
             if email_year < current_year:
                 #create_archive_folder(mail, archive_folder, email_year)
-                archive_path = f"/{archive_folder}/{email_year}"
+                archive_path = f"{archive_folder}/{email_year}"
                 print(f"Copying email {email_id} to {archive_path}")
                 mail.copy(email_id, archive_path)
                 mail.store(email_id, '+FLAGS', '\\Deleted')
