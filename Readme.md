@@ -1,6 +1,9 @@
 Email Archiver script for email INBOX with too much emails, in Pyhton
 =====================================================================
 
+This python script will look at emails in your INBOX and will move them to the archiving folder you set, by year the email was received. Emails from the current year will remain in your INBOX.
+
+
 ## 1. Set Up Your Environment
 
 Ensure Python 3.x is installed on your system.
