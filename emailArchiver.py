@@ -20,23 +20,35 @@ def connect_to_mailbox(server, username, password):
     mail.login(username, password)
     return mail
 
-def create_archive_folder(mail, folder_name):
+def create_archive_folder(mail, folder_name, year):
+    archive_path = f'"{folder_name}/{year}"'
     # Create the archive folder if it doesn't exist
-    status, folders = mail.list()
-    if folder_name not in str(folders):
+    status, _ = mail.status(folder_name, '(UIDVALIDITY)')
+    if status != 'OK': 
         mail.create(folder_name)
+        mail.subscribe(folder_name)
+    # Create the archive subfolder if it doesn't exist
+    status, _ = mail.status(archive_path, '(UIDVALIDITY)')
+    if status != 'OK':
+        print(f"Archive folder {folder_name}/{year} does not exist. Creating it...")
+        create_status, _ = mail.create(archive_path)
+        if create_status == 'OK':
+            print(f"Archive folder {folder_name}/{year} created.")
+            # Subscribe the newly created folder
+            subscribe_status, _ = mail.subscribe(archive_path)
+            if subscribe_status == 'OK':
+                print(f"Subscribed to folder {folder_name}/{year}.")
+            else:
+                print(f"Failed to subscribe to folder {folder_name}/{year}.")
+        else:
+            print(f"Failed to create archive folder {folder_name}/{year}.")
 
 def list_mail_folders(mail):
-    # List all email folders
-    #status, folders = mail.list(directory="INBOX")
-    #if status == 'OK':
-    #    print("Available mail folders:")
-    #    for folder in folders:
-    #        print(folder.decode())      
+    # List all email subscribed folders
     status, folders = mail.lsub()
     if status == 'OK':
         print("Available mail folders:")
-        print("/INBOX")
+        print("INBOX")
         for folder in folders:
             print(folder.decode())
     else:
@@ -84,7 +96,9 @@ def archive_emails(mail, archive_folder):
             email_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
             email_year = email_date.year
             if email_year < current_year:
-                archive_path = f'"{archive_folder}/{email_year}"'
+                #create_archive_folder(mail, archive_folder, email_year)
+                archive_path = f"/{archive_folder}/{email_year}"
+                print(f"Copying email {email_id} to {archive_path}")
                 mail.copy(email_id, archive_path)
                 mail.store(email_id, '+FLAGS', '\\Deleted')
                 move_count += 1
